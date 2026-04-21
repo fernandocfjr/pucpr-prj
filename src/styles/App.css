@@ -1,0 +1,83 @@
+.login-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: min(360px, 100% - 40px);
+  margin: 10px auto 0;
+  text-align: left;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: var(--text-h);
+}
+
+.login-form .field span {
+  font-weight: 500;
+}
+
+.login-form input {
+  font: inherit;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.login-form input:focus {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 1px;
+}
+
+.login-form button[type='submit'] {
+  font: inherit;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.login-form button[type='submit']:hover {
+  filter: brightness(1.05);
+}
+
+.login-message {
+  margin: 0;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.login-message--success {
+  color: #16a34a;
+}
+
+@media (prefers-color-scheme: dark) {
+  .login-message--success {
+    color: #4ade80;
+  }
+}
+
+.login-message--fail {
+  color: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  .login-message--fail {
+    color: #f87171;
+  }
+}
