@@ -1,5 +1,6 @@
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useAuth } from "../hooks/useAuth";
+import { formatDateToBR } from "../utils/date";
 
 export function HomePage() {
   const { userData, logout, loading } = useAuth();
@@ -15,15 +16,19 @@ export function HomePage() {
           <h1>Home</h1>
           <h2>Meus dados</h2>
           <p>
+            <strong>E-mail:</strong>{" "}
+            {userData.email}
+          </p>
+          <p>
             <strong>Nome completo:</strong>{" "}
             {userData.firstName + " " + userData.surname}
           </p>
 
           <p>
-            <strong>Data de nascimento:</strong> {userData.birthdate}
+            <strong>Data de nascimento:</strong> {formatDateToBR(userData.birthdate)}
           </p>
 
-          <button type="button" onClick={logout}>
+          <button type="button" onClick={logout} style={{ marginTop: "2rem"}}>
             Logout
           </button>
         </div>

@@ -19,3 +19,16 @@ export type LoginUserData = {
   email: string;
   password: string;
 };
+
+export type LoginErrors = {
+  email?: string;
+  password?: string;
+};
+
+export type SignUpErrors = {
+  firstName?: string;
+  surname?: string;
+  birthdate?: string;
+  email?: string;
+  password?: string;
+};
