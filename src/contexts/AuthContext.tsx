@@ -12,13 +12,13 @@ import {
   onAuthStateChanged,
   type User,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, type DocumentData } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, firestoreDb } from "../services/firebase";
-import type { LoginUserData, SignUpUserData } from "../@types/generics";
+import type { LoginUserData, SignUpUserData, UserData } from "../@types/generics";
 
 interface AuthContextType {
   user: User | null;
-  userData: DocumentData;
+  userData: UserData | null;
   loading: boolean;
   register: (signUpUserData: SignUpUserData) => Promise<void>;
   login: (loginUserData: LoginUserData) => Promise<void>;
@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<DocumentData>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function register(signUpUserData: SignUpUserData) {
@@ -45,9 +45,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const firebaseUser = credential.user;
 
+    // @ts-ignore
+    delete signUpUserData.password;
+
     await setDoc(doc(firestoreDb, "users", firebaseUser.uid), {
       uid: firebaseUser.uid,
-      createdAt: new Date(),
+      createdAt: serverTimestamp(),
       ...signUpUserData,
     });
   }
@@ -69,7 +72,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const snapshot = await getDoc(docRef);
 
     if (snapshot.exists()) {
-      setUserData(snapshot.data());
+      setUserData(snapshot.data() as UserData);
     }
   }
 
