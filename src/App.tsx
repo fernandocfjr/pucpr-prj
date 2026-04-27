@@ -1,27 +1,12 @@
 import { useState, type SubmitEvent } from 'react'
 import './styles/App.css'
-import { EventLoginType } from './@types/enums';
-
-type EventLoginTypeValue = (typeof EventLoginType)[keyof typeof EventLoginType];
-
-const loginUserData = {
-  email: "fernandocrepaldi.j@pucpr.edu.br",
-  militaryGradePassword: "batatinha123"
-}
 
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [feedback, setFeedback] = useState<EventLoginTypeValue | undefined>();
 
   function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    const ok =
-      email.trim() === loginUserData.email &&
-      password === loginUserData.militaryGradePassword;
-
-    setFeedback(ok ? EventLoginType.SUCCESS : EventLoginType.FAIL);
   }
 
   return (
@@ -52,18 +37,6 @@ function App() {
           </label>
           
           <button type="submit">Acessar</button>
-          
-          {feedback === EventLoginType.SUCCESS && (
-            <p className="login-message login-message--success" role="status">
-              Acessado com sucesso!
-            </p>
-          )}
-          
-          {feedback === EventLoginType.FAIL && (
-            <p className="login-message login-message--fail" role="alert">
-              Usuário ou senha incorretos!
-            </p>
-          )}
         </form>
       </div>
     </section>
