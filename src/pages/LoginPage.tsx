@@ -3,18 +3,29 @@ import { Link, useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import { useAuth } from "../hooks/useAuth";
 import { LoadingButton } from "../components/LoadingButton";
+import type { LoginErrors } from "../@types/generics";
+import { validateLoginData } from "../utils/dto/user";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<LoginErrors>({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const nextErrors = validateLoginData(email, password);
+
+    setFieldErrors(nextErrors);
     setErrorMessage("");
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -27,11 +38,11 @@ export function LoginPage() {
           error.code === "auth/user-not-found" ||
           error.code === "auth/wrong-password")
       ) {
-        setErrorMessage("Essa conta não está registrada.");
+        setErrorMessage("Conta não registrada ou dados incorretos.");
         return;
       }
 
-      setErrorMessage("Não foi possível realizar o login. Tente novamente.");
+      setErrorMessage("Ocorreu um erro ao realizar o login. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -47,11 +58,16 @@ export function LoginPage() {
             <input
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setFieldErrors((current) => ({ ...current, email: undefined }));
+              }}
               autoComplete="email"
               disabled={isLoading}
+              aria-invalid={Boolean(fieldErrors.email)}
               required
             />
+            {fieldErrors.email && <small className="field-error">{fieldErrors.email}</small>}
           </label>
 
           <label className="field">
@@ -59,11 +75,18 @@ export function LoginPage() {
             <input
               type="password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setFieldErrors((current) => ({ ...current, password: undefined }));
+              }}
               autoComplete="current-password"
               disabled={isLoading}
+              aria-invalid={Boolean(fieldErrors.password)}
               required
             />
+            {fieldErrors.password && (
+              <small className="field-error">{fieldErrors.password}</small>
+            )}
           </label>
 
           <LoadingButton type="submit" isLoading={isLoading} loadingText="Entrando...">
